@@ -79,6 +79,36 @@ Default locations:
 
 Official Arc is not patched or replaced.
 
+## Use iCloud Passwords
+
+Arc Borderless can use passwords from iCloud Keychain through Apple's
+**iCloud Passwords** browser extension:
+
+1. Open the **Passwords** app on your Mac.
+2. Choose **Passwords > Get Browser Extension**, then install Apple's iCloud
+   Passwords extension in Arc Borderless.
+3. In the extension's options, leave **In-Page AutoFill** enabled.
+4. If iCloud Passwords will be your main password manager, also leave **Turn
+   Off Chrome AutoFill** enabled. This prevents Arc's built-in password popup
+   from covering or competing with Apple's popup.
+
+Google sign-in uses separate email and password pages. On the first page,
+select your account from the iCloud Passwords list; Apple fills only the email.
+Click **Next**. On the password page, click the password field and select the
+same account from the iCloud Passwords list again. Touch ID appears at that
+point, and the password is filled after authentication. Clicking the password
+field alone only opens the account list, and the extension does not press
+Google's **Next** button for you.
+
+Passwords imported into Arc's Password Manager and passwords stored in iCloud
+Keychain are separate collections. To use a Chrome CSV with iCloud Passwords,
+import it into the macOS **Passwords** app with **File > Import Passwords from
+File**. Do not import the CSV only into Arc and expect it to appear in iCloud.
+
+If you prefer Arc's built-in Password Manager, disable the iCloud Passwords
+extension. Running both autofill systems at the same time can produce
+overlapping or inconsistent suggestions.
+
 ## Requirements and technical use
 
 - macOS, with Arc installed locally. Tested platform: Apple Silicon.
