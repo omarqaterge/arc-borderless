@@ -1,0 +1,29 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  unit-tests:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Run installer tests
+        run: python3 -m unittest discover -s tests -v
+      - name: Compile native helpers
+        run: |
+          mkdir -p "$RUNNER_TEMP/arc-borderless-build"
+          xcrun clang -fobjc-arc -Wno-deprecated-declarations \
+            -framework Cocoa -framework Security -lsqlite3 \
+            src/Manager.m -o "$RUNNER_TEMP/arc-borderless-build/manager"
+          xcrun clang -fobjc-arc -Wno-deprecated-declarations \
+            -framework Cocoa -framework Security -lsqlite3 \
+            src/Launcher.m -o "$RUNNER_TEMP/arc-borderless-build/launcher"
+          xcrun clang -dynamiclib -fobjc-arc -Wno-deprecated-declarations \
+            -framework Cocoa -framework CloudKit -framework Security \
+            -framework QuartzCore -lsqlite3 src/Borderless.m \
+            -o "$RUNNER_TEMP/arc-borderless-build/ArcBorderless.dylib"
