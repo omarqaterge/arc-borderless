@@ -92,13 +92,24 @@ Arc Borderless can use passwords from iCloud Keychain through Apple's
    Off Chrome AutoFill** enabled. This prevents Arc's built-in password popup
    from covering or competing with Apple's popup.
 
-Google sign-in uses separate email and password pages. On the first page,
+### Passwords and passkeys are different
+
+The iCloud Passwords extension can fill ordinary saved passwords, but it does
+not restore native iCloud **passkey** access to this locally signed clone. Arc
+Borderless cannot show the macOS sheet that says **Touch ID to Use Passkey**.
+That feature requires Apple's restricted
+`com.apple.developer.web-browser.public-key-credential` entitlement on a
+browser signed by an Apple-approved developer. Official Arc and signed browsers
+such as Zen can carry that entitlement; an ad-hoc signed clone cannot.
+
+For Google, choose **Try another way** and use your password instead of the
+passkey. Google then uses separate email and password pages. On the first page,
 select your account from the iCloud Passwords list; Apple fills only the email.
 Click **Next**. On the password page, click the password field and select the
-same account from the iCloud Passwords list again. Touch ID appears at that
-point, and the password is filled after authentication. Clicking the password
-field alone only opens the account list, and the extension does not press
-Google's **Next** button for you.
+same account from the iCloud Passwords list again. If authentication is
+requested, approve it and the extension fills the saved password. Clicking the
+password field alone only opens the account list, and the extension does not
+press Google's **Next** button for you.
 
 Passwords imported into Arc's Password Manager and passwords stored in iCloud
 Keychain are separate collections. To use a Chrome CSV with iCloud Passwords,
@@ -207,6 +218,10 @@ python3 borderless.py uninstall
 ## Limitations
 
 - Unofficial, locally re-signed app. Official signing identity and restricted entitlements cannot be retained. CloudKit is disabled; official sync is not promised.
+- Native iCloud passkeys and the **Touch ID to Use Passkey** system sheet are
+  unavailable because the clone cannot retain Apple's restricted browser
+  passkey entitlement. The iCloud Passwords extension can still fill ordinary
+  passwords.
 - Only one-time profile migration, not continuous synchronization or two-way merging.
 - Arc's native private UI classes may change, even in a Chromium-only update.
 - Keychain access may prompt again after rebuilding a locally signed executable.
