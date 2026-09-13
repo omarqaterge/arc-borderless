@@ -18,7 +18,37 @@ page CSS.
 > supported, or endorsed by The Browser Company. Back up important data and
 > read the limitations before use.
 
-## Requirements
+## Easy installation
+
+No Terminal commands need to be copied or typed.
+
+1. Install official Arc in your Applications folder. Open it once and make
+   sure your Spaces, tabs and logins are present.
+2. Download **[Arc-Borderless-Installer.zip](https://github.com/omarqaterge/arc-borderless/releases/latest/download/Arc-Borderless-Installer.zip)**.
+3. Double-click the ZIP, then open the resulting folder.
+4. Control-click **Install Arc Borderless.command**, choose **Open**, then
+   choose **Open** again if macOS asks. This extra first-open step is normal
+   for an unsigned community script.
+5. Read the short explanation and press Return to continue.
+
+The installer checks the Mac, offers Apple's free build tools if they are
+missing, quits Arc before copying its data, creates and tests the isolated
+browser, then opens it. It keeps the Terminal window open if something fails
+so the error can be read.
+
+After official Arc receives an update, download the latest installer and run
+**Install Arc Borderless.command** again. It detects the existing installation,
+backs it up, applies the new Arc build and keeps the existing Borderless
+profile.
+
+Default locations:
+
+- Browser: `~/Applications/Arc Borderless.app`
+- Private profile and backups: `~/Library/Application Support/Arc Borderless`
+
+Official Arc is not patched or replaced.
+
+## Requirements and technical use
 
 - macOS, with Arc installed locally. Tested platform: Apple Silicon.
 - Python 3.9 or newer and Apple Command Line Tools (`xcode-select --install`).
@@ -27,9 +57,10 @@ page CSS.
 
 The package contains patch source, installer code, and tests. It contains no Arc application, profile, cookies, or passwords.
 
-## Create from official Arc
+### Create from official Arc
 
-Double-click `Create.command`, or run:
+Most people should use **Install Arc Borderless.command**. The equivalent
+manual command is:
 
 ```sh
 python3 borderless.py create --source-data "$HOME/Library/Application Support/Arc" --preferences "$HOME/Library/Preferences/company.thebrowser.Browser.plist" --quit-source
@@ -43,16 +74,11 @@ For a fresh profile that does not copy cookies or saved logins:
 python3 borderless.py create --empty
 ```
 
-Default destinations:
-
-- App: `~/Applications/Arc Borderless.app`
-- Data: `~/Library/Application Support/Arc Borderless`
-
 You may supply `--app PATH` and `--root PATH` to choose other separate destinations. An existing destination is never overwritten by `create`.
 
 Arc account sign-in may be required after migration from official Arc. Website cookies and saved passwords are separate from Arc account authentication. Copied login records do not guarantee that every website will retain its session.
 
-## Migrate the earlier Borderless prototype
+### Migrate the earlier Borderless prototype
 
 The prototype has two apparent profile locations; the active one is normally the `User Data` folder inside its fixed home. Supply the parent Arc application-support folder, not the unused standalone `profile` folder:
 
@@ -67,9 +93,10 @@ python3 borderless.py create \
 
 This also copies authentication items specifically from the prototype's `ArcBorderlessTest/` Keychain namespace. It does not enumerate or export other applications' secret values.
 
-## Update
+### Manual update
 
-First update **official Arc** through its normal updater. Then double-click `Update.command`, or run:
+First update **official Arc** through its normal updater. Then run the friendly
+installer again, or use:
 
 ```sh
 python3 borderless.py update
@@ -81,9 +108,22 @@ The clone's Sparkle updater is blocked; it must be updated through this installe
 
 Static checks and startup checks are not proof of all UI behavior. Future Chromium releases may still need patch changes. Do not keep using an obsolete browser indefinitely if a security update fails validation.
 
-## Roll back
+## Troubleshooting and rollback
 
-The update command prints a matched app/profile backup directory:
+- **macOS says the script is from an unidentified developer:** Control-click
+  the installer, choose **Open**, then confirm **Open**. You normally do this
+  only the first time you download a release.
+- **Apple's build tools are missing:** accept the installation offered by
+  macOS, wait for it to finish, then run the installer again.
+- **The installer stops:** read the final message in the Terminal window.
+  Existing apps and profiles are retained until a replacement passes its
+  checks.
+- **A website asks you to sign in again:** some sessions are tied to a specific
+  app or device and cannot be migrated. Your saved password may still be
+  available.
+
+For a manual rollback, the update command prints a matched app/profile backup
+directory:
 
 ```sh
 python3 borderless.py rollback '/path/printed/by/update'
@@ -91,7 +131,7 @@ python3 borderless.py rollback '/path/printed/by/update'
 
 Both app and profile are restored together because Chromium profile migrations may not be backward compatible. Your newer app/profile are preserved in another backup before restoring. Changes made after the chosen snapshot are not merged into the older snapshot.
 
-## Inspect or uninstall
+## Manual inspection or uninstall
 
 ```sh
 python3 borderless.py check

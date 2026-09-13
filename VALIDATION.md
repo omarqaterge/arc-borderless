@@ -1,4 +1,4 @@
-# Validation — 0.1.0 beta
+# Validation — 0.2.0 beta
 
 Tested on macOS Apple Silicon, September 13, 2026, against official Arc 1.164.0 (86805).
 
@@ -13,6 +13,10 @@ Tested on macOS Apple Silicon, September 13, 2026, against official Arc 1.164.0 
 - Single-page borderless rendering, side-by-side and stacked splits, Find-in-Page match highlighting, and Little Arc startup exercised interactively. Stacked-pane drag resizing was visually verified.
 - Update built a new staged app from official Arc, checked startup and credential decryption in a disposable profile copy, and replaced the app while retaining the existing profile.
 - A duplicate running test copy caused candidate rejection; duplicate-instance checks and candidate cleanup were added.
+- The double-click installer was checked for first-run guidance, prerequisite
+  detection, existing-install detection, readable failure handling, and shell
+  syntax. Its update path can be safely dismissed before any change by closing
+  the window.
 - 16 fixture tests passed: copy consistency and isolation, corrupt database rejection, symlink rejection, path overlap rejection, existing destination refusal, downgrade refusal, failed-update preservation, successful-update backup retention, rollback of matched app/profile, rollback failure recovery, and uninstall data retention.
 
 ## Boundaries
