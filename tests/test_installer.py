@@ -49,6 +49,10 @@ class InstallerTests(unittest.TestCase):
  def test_identity_is_unique_and_namespaced(self):
   a,c=b.new_identity(),b.new_identity()
   self.assertNotEqual(a,c);self.assertTrue(a['keychainNamespace'].startswith('ArcBorderless/'))
+ def test_launcher_keeps_readable_passwords_when_one_entry_cannot_decrypt(self):
+  source=(Path(__file__).resolve().parents[1]/'src/Launcher.m').read_text()
+  self.assertIn('--enable-features=SkipUndecryptablePasswords',source)
+  self.assertIn('--disable-features=ClearUndecryptablePasswords,ClearUndecryptablePasswordsInSync',source)
  def test_atomic_manifest(self):
   p=self.root/'manifest';b.atomic_json(p,{'v':1});b.atomic_json(p,{'v':2})
   self.assertEqual(json.loads(p.read_text()),{'v':2});self.assertFalse(p.with_name('manifest.tmp').exists())

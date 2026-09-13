@@ -180,6 +180,10 @@ python3 borderless.py uninstall
 - Only one-time profile migration, not continuous synchronization or two-way merging.
 - Arc's native private UI classes may change, even in a Chromium-only update.
 - Keychain access may prompt again after rebuilding a locally signed executable.
+- Password Manager skips an unreadable legacy credential instead of showing an
+  empty list or deleting it. Readable saved and imported passwords remain
+  available, while the original database stays in the automatic backup for
+  recovery.
 - The clone is not registered as the default browser or a URL handler by the installer.
 - Website sessions, device-bound credentials, and server-side login validity cannot be guaranteed by copying a profile.
 - Backups contain private browsing data. Keep them private.

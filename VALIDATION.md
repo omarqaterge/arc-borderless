@@ -10,6 +10,8 @@ Tested on macOS Apple Silicon, September 13, 2026, against official Arc 1.164.0 
 - Prototype Safe Storage and Arc authentication copied into a unique clone Keychain namespace without exporting secret values.
 - Migrated sidebar and Arc authentication restored in a live browser window.
 - Cookie and saved-password decryption verified inside the cloned browser.
+- Password Manager remains usable when one legacy credential is unreadable;
+  readable entries are returned and the unreadable row is preserved.
 - Single-page borderless rendering, side-by-side and stacked splits, Find-in-Page match highlighting, and Little Arc startup exercised interactively. Stacked-pane drag resizing was visually verified.
 - Update built a new staged app from official Arc, checked startup and credential decryption in a disposable profile copy, and replaced the app while retaining the existing profile.
 - A duplicate running test copy caused candidate rejection; duplicate-instance checks and candidate cleanup were added.

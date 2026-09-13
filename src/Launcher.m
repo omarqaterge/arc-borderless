@@ -29,6 +29,11 @@ int main(int argc, char **argv) {
   if(verifyEncryption && report) setenv("ARCB_VERIFY_ENCRYPTION","1",1); else unsetenv("ARCB_VERIFY_ENCRYPTION");
   if(report) setenv("ARCB_REPORT",report.fileSystemRepresentation,1); else unsetenv("ARCB_REPORT");
   [args insertObject:[@"--user-data-dir=" stringByAppendingString:data] atIndex:0];
+  // A single credential that Chromium cannot decrypt must not hide every
+  // readable credential. Keep the damaged row for recovery instead of
+  // silently deleting it.
+  [args addObject:@"--enable-features=SkipUndecryptablePasswords"];
+  [args addObject:@"--disable-features=ClearUndecryptablePasswords,ClearUndecryptablePasswordsInSync"];
   [args addObject:@"--no-first-run"];
   [args addObject:@"--no-default-browser-check"];
   char **av=calloc(args.count+2,sizeof(char*)); av[0]=(char*)binary.fileSystemRepresentation;
