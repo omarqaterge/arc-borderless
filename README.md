@@ -44,7 +44,8 @@ profile.
 Default locations:
 
 - Browser: `~/Applications/Arc Borderless.app`
-- Private profile and backups: `~/Library/Application Support/Arc Borderless`
+- Private profile: `~/Library/Application Support/Arc Borderless`
+- Update backups: `~/Library/Application Support/Arc Borderless Backups`
 
 Official Arc is not patched or replaced.
 
