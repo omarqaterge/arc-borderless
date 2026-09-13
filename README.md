@@ -18,6 +18,36 @@ page CSS.
 > supported, or endorsed by The Browser Company. Back up important data and
 > read the limitations before use.
 
+## What is different from regular Arc?
+
+Arc Borderless changes the native frame around webpages. It does not redesign
+websites or replace Arc's sidebar.
+
+| Area | Regular Arc | Arc Borderless |
+| --- | --- | --- |
+| Webpage edges | Content sits inside Arc's visible outer margins | Content extends to the window edges |
+| Split panes | Panes have outlines and visible gaps between them | Pane outlines and gaps are removed |
+| Split toolbars | Each pane shows its own toolbar area | Individual split-pane toolbars are hidden |
+| Split resizing | Dividers can be dragged | Resizing remains available through invisible drag areas |
+| Application | Uses the official Arc app and profile | Runs as a separate `Arc Borderless.app` with an isolated profile |
+| Existing browser data | Lives in the official Arc profile | Spaces, folders, tabs, history, cookies and local saved logins are copied during the first installation |
+| Updates | Official Arc updates itself | Update official Arc first, then rerun this installer to rebuild the clone |
+| Recovery | Uses Arc's normal application data | The installer backs up the Borderless app and profile before replacing an existing clone |
+
+The patch leaves Arc's sidebar, Spaces, folders, command bar, extensions,
+downloads, Find in Page, Little Arc and normal browsing available. It focuses
+on removing the visible frame around web content and between split panes.
+
+Official Arc remains installed and unchanged. Arc Borderless has a different
+bundle identity, profile directory and Keychain namespace, so both browsers
+can exist on the same Mac. The initial migration is a copy, not ongoing
+two-way synchronization: later changes made in one browser are not
+automatically merged into the other.
+
+Because the clone is locally signed, CloudKit is disabled and Arc cloud sync
+is not promised. Some device-bound website sessions may ask you to sign in
+again even when their cookies and saved login records were copied.
+
 ## Easy installation
 
 No Terminal commands need to be copied or typed.
