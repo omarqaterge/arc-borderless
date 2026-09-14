@@ -1,8 +1,9 @@
 # Security policy
 
-Arc Borderless handles browser profiles and macOS Keychain items. Please do
-not include cookies, passwords, profile databases, Keychain values, account
-identifiers, or private browsing data in public bug reports.
+Arc Borderless does not read or copy browser profiles or Keychain items. It
+does load a local visual patch into the official Arc process. Please do not
+include cookies, passwords, profile databases, Keychain values, account
+identifiers, or private browsing data in public bug reports or diagnostics.
 
 Report a suspected vulnerability through GitHub's private vulnerability
 reporting for this repository. If that feature is unavailable, open an issue

@@ -5,10 +5,7 @@ set -uo pipefail
 cd -- "${0:A:h}"
 
 APP="$HOME/Applications/Arc Borderless.app"
-PROFILE="$HOME/Library/Application Support/Arc Borderless"
 SOURCE_APP="/Applications/Arc.app"
-SOURCE_PROFILE="$HOME/Library/Application Support/Arc"
-SOURCE_PREFERENCES="$HOME/Library/Preferences/company.thebrowser.Browser.plist"
 
 finish() {
   printf '\nPress Return to close this window. '
@@ -26,8 +23,8 @@ cat <<'WELCOME'
 Arc Borderless Installer
 ========================
 
-This installer creates a separate Arc Borderless browser. Your official Arc
-application stays unchanged.
+This installer adds Borderless mode to your official Arc without modifying
+Arc's application files. Borderless mode uses your normal Arc profile.
 WELCOME
 
 [[ "$(uname -s)" == "Darwin" ]] || stop "This installer requires macOS."
@@ -49,42 +46,24 @@ command -v python3 >/dev/null 2>&1 || stop "Python 3 was not found. Reinstall Ap
 python3 -c 'import sys; raise SystemExit(sys.version_info < (3, 9))' \
   || stop "Python 3.9 or newer is required. Update Apple's Command Line Tools and try again."
 
-if [[ -e "$APP" || -e "$PROFILE" ]]; then
-  [[ -d "$APP" && -d "$PROFILE" ]] \
-    || stop "Only part of an earlier installation was found. See the troubleshooting section in README.md before continuing."
-  cat <<'UPDATE'
-
-An existing Arc Borderless installation was found.
-This will rebuild it from your current official Arc while keeping its profile.
-Both the app and profile will be backed up first.
-UPDATE
-  printf '\nPress Return to continue, or close this window to cancel. '
-  read -r
-  python3 borderless.py update || stop "The update failed safely. Your existing Arc Borderless installation was not replaced. Review the message above."
-else
-  [[ -d "$SOURCE_PROFILE/User Data" ]] \
-    || stop "Arc profile data was not found. Open official Arc once, finish its setup, quit it, and run this installer again."
-  cat <<'CREATE'
+cat <<'INSTALL'
 
 The installer will now:
-  1. Quit official Arc so its data can be copied safely.
-  2. Create Arc Borderless in your Applications folder.
-  3. Copy your Arc profile, including Spaces, folders, tabs and local logins.
-  4. Test the copy before installing it.
+  1. Quit Arc so the startup test can run safely.
+  2. Verify Arc's official signature and browser compatibility.
+  3. Install a small Arc Borderless launcher in your Applications folder.
+  4. Test Borderless mode without opening your real profile.
 
-macOS may ask whether the new browser can use an Arc Safe Storage Keychain
-item. Choose Allow so copied website cookies and saved logins can be read.
-CREATE
-  printf '\nPress Return to continue, or close this window to cancel. '
-  read -r
-  python3 borderless.py create \
-    --source-data "$SOURCE_PROFILE" \
-    --preferences "$SOURCE_PREFERENCES" \
-    --quit-source \
-    || stop "The installation failed safely. Official Arc and its profile were not modified. Review the message above."
-fi
+Arc itself and your Arc profile will not be copied, patched or replaced.
+If you used an older isolated Arc Borderless clone, its profile will be kept
+as a recovery copy.
+INSTALL
+printf '\nPress Return to continue, or close this window to cancel. '
+read -r
+python3 borderless.py install \
+  || stop "The installation failed safely. Arc and any existing Arc Borderless installation were not replaced. Review the message above."
 
 printf '\nSuccess! Arc Borderless is ready.\n'
 open "$APP"
-printf 'The browser is opening now. Use this same installer after official Arc updates.\n'
+printf 'Borderless mode is opening your normal Arc profile now. Run this installer again after Arc updates.\n'
 finish

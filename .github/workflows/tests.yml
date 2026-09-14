@@ -20,12 +20,11 @@ jobs:
         run: |
           mkdir -p "$RUNNER_TEMP/arc-borderless-build"
           xcrun clang -fobjc-arc -Wno-deprecated-declarations \
-            -framework Cocoa -framework Security -lsqlite3 \
+            -framework Cocoa \
             src/Manager.m -o "$RUNNER_TEMP/arc-borderless-build/manager"
           xcrun clang -fobjc-arc -Wno-deprecated-declarations \
-            -framework Cocoa -framework Security -lsqlite3 \
+            -framework Cocoa \
             src/Launcher.m -o "$RUNNER_TEMP/arc-borderless-build/launcher"
           xcrun clang -dynamiclib -fobjc-arc -Wno-deprecated-declarations \
-            -framework Cocoa -framework CloudKit -framework Security \
-            -framework QuartzCore -lsqlite3 src/Borderless.m \
+            -framework Cocoa -framework QuartzCore src/OfficialBorderless.m \
             -o "$RUNNER_TEMP/arc-borderless-build/ArcBorderless.dylib"

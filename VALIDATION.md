@@ -1,33 +1,27 @@
-# Validation — 0.2.0 beta
+# Validation — signed single-instance beta
 
 Tested on macOS Apple Silicon, September 13, 2026, against official Arc 1.164.0 (86805).
 
 ## Completed
 
-- Official Apple-anchored developer signature and expected Arc team/identifier checked. Source executable hash remained unchanged.
-- Fresh isolated clone built, locally signed, launched, and normally quit.
-- Existing Borderless prototype profile copied with file hashes checked and SQLite integrity verified.
-- Prototype Safe Storage and Arc authentication copied into a unique clone Keychain namespace without exporting secret values.
-- Migrated sidebar and Arc authentication restored in a live browser window.
-- Cookie and saved-password decryption verified inside the cloned browser.
-- Password Manager remains usable when one legacy credential is unreadable;
-  readable entries are returned and the unreadable row is preserved.
-- Single-page borderless rendering, side-by-side and stacked splits, Find-in-Page match highlighting, and Little Arc startup exercised interactively. Stacked-pane drag resizing was visually verified.
-- Update built a new staged app from official Arc, checked startup and credential decryption in a disposable profile copy, and replaced the app while retaining the existing profile.
-- A duplicate running test copy caused candidate rejection; duplicate-instance checks and candidate cleanup were added.
-- The double-click installer was checked for first-run guidance, prerequisite
-  detection, existing-install detection, readable failure handling, and shell
-  syntax. Its update path can be safely dismissed before any change by closing
-  the window.
-- 16 fixture tests passed: copy consistency and isolation, corrupt database rejection, symlink rejection, path overlap rejection, existing destination refusal, downgrade refusal, failed-update preservation, successful-update backup retention, rollback of matched app/profile, rollback failure recovery, and uninstall data retention.
+- Verified the source app against Arc's Apple-anchored developer requirement, bundle identifier `company.thebrowser.Browser`, and Team ID `S6N382Y83G`.
+- Verified the source executable hash before building the launcher.
+- Built and ad-hoc signed the small launcher and borderless library without copying or modifying Arc.app.
+- Started Arc's untouched executable through the launcher with the borderless library loaded.
+- Confirmed the live browser process used Arc's official bundle identifier and Team ID.
+- Confirmed the live executable retained `com.apple.developer.web-browser.public-key-credential`.
+- Confirmed `ArcBorderless.dylib` was loaded in the running official Arc process.
+- Confirmed signed mode uses the normal Arc profile in a normal launch. The automated startup test uses a disposable empty profile.
+- Confirmed the patch hooks installed and produced a live Arc window during the disposable startup test.
+- Confirmed the signed-mode patch does not interpose Keychain APIs, disable CloudKit, or block Arc's updater.
+- Confirmed an older isolated Arc Borderless profile and the replaced app are retained during migration to signed mode.
+- Installer shell syntax, Python syntax, code signatures, and 9 automated tests passed.
 
 ## Boundaries
 
-- The real update test reapplied Arc 1.164.0 to a clone based on that same official build. Migration started from the older Borderless prototype. Compatibility with unreleased future Arc builds has not been established.
-- Rollback and uninstall were exercised with fixtures, not by removing the user's working installation.
-- Initial creation from an official Arc profile, Intel macOS, all extension behaviors, all websites' session validity, fullscreen transitions, and every split arrangement have not been exhaustively tested.
-- The automated update gate checks the source signature, required symbols/methods, startup, home isolation, a browser window, and encrypted-data readability. It does not replace a complete visual regression suite.
-- The disposable validation profile is isolated on disk. It uses the clone's Keychain namespace; official Arc's Keychain items are not used for subsequent updates.
-- CloudKit is disabled. Other Arc account/sync behavior is not guaranteed.
-
-This is a usable first beta, not an official Arc distribution or a promise of compatibility with all future releases.
+- Native passkey entitlement presence was verified. A complete Google passkey login with Touch ID still requires the user to exercise their own account and Keychain entry.
+- Arc and Borderless mode are the same signed application process and cannot run simultaneously.
+- The real profile was opened only by the final normal launch. Automated validation used a disposable profile and did not inspect private browsing data.
+- Compatibility with later Arc builds is not assumed. The launcher refuses to run if the verified Arc executable hash changes.
+- Apple Silicon is tested. Intel macOS and every split arrangement are not exhaustively verified.
+- A future Arc hardened-runtime or library-validation change could prevent local injection.

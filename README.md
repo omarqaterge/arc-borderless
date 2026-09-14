@@ -3,250 +3,119 @@
 [![Tests](https://github.com/omarqaterge/arc-borderless/actions/workflows/tests.yml/badge.svg)](https://github.com/omarqaterge/arc-borderless/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 
-An experimental macOS installer that creates an isolated, borderless clone of
-Arc and can rebuild it from later official Arc releases.
+Arc Borderless is an experimental macOS launcher that opens your official Arc browser in a borderless mode. It removes the frame around webpages and the visible gaps between split panes while keeping split resizing available.
 
-Creates a locally patched copy of your installed Arc browser, with its own profile and Keychain namespace. Official Arc is the source for application updates. It is never patched in place.
-
-The clone removes Arc's outer web-content margins, split-pane outlines and
-per-pane split toolbars while keeping split resizing available. It uses native
-runtime hooks because these elements are implemented in AppKit rather than web
-page CSS.
+It uses Arc's untouched, officially signed executable and your normal Arc profile. Your passwords, cookies, tabs, Spaces, folders, extensions, account, and settings therefore remain exactly where Arc already stores them.
 
 > [!WARNING]
-> This is an unofficial, locally signed modification. It is not made,
-> supported, or endorsed by The Browser Company. Back up important data and
-> read the limitations before use.
+> This is an unofficial community modification. It is not made, supported, or endorsed by The Browser Company. The launcher loads local code into Arc at startup and must be rebuilt after Arc updates.
 
-## What is different from regular Arc?
+## What changes?
 
-Arc Borderless changes the native frame around webpages. It does not redesign
-websites or replace Arc's sidebar.
-
-| Area | Regular Arc | Arc Borderless |
+| Area | Regular Arc | Arc Borderless mode |
 | --- | --- | --- |
-| Webpage edges | Content sits inside Arc's visible outer margins | Content extends to the window edges |
-| Split panes | Panes have outlines and visible gaps between them | Pane outlines and gaps are removed |
-| Split toolbars | Each pane shows its own toolbar area | Individual split-pane toolbars are hidden |
-| Split resizing | Dividers can be dragged | Resizing remains available through invisible drag areas |
-| Application | Uses the official Arc app and profile | Runs as a separate `Arc Borderless.app` with an isolated profile |
-| Existing browser data | Lives in the official Arc profile | Spaces, folders, tabs, history, cookies and local saved logins are copied during the first installation |
-| Updates | Official Arc updates itself | Update official Arc first, then rerun this installer to rebuild the clone |
-| Recovery | Uses Arc's normal application data | The installer backs up the Borderless app and profile before replacing an existing clone |
+| Webpage edges | Visible margins surround web content | Content extends to the window edges |
+| Split panes | Outlines and visible gaps separate panes | Pane outlines and gaps are removed |
+| Split toolbars | Each pane has its own toolbar area | Individual split-pane toolbars are hidden |
+| Split resizing | Visible dividers can be dragged | Invisible drag areas keep resizing available |
+| Browser data | Uses your normal Arc profile | Uses the same normal Arc profile |
+| App identity | Official Arc signature and entitlements | The running browser is still official signed Arc |
+| Passkeys | Native iCloud Keychain passkeys are available | The same native passkey entitlement remains available |
 
-The patch leaves Arc's sidebar, Spaces, folders, command bar, extensions,
-downloads, Find in Page, Little Arc and normal browsing available. It focuses
-on removing the visible frame around web content and between split panes.
-
-Official Arc remains installed and unchanged. Arc Borderless has a different
-bundle identity, profile directory and Keychain namespace, so both browsers
-can exist on the same Mac. The initial migration is a copy, not ongoing
-two-way synchronization: later changes made in one browser are not
-automatically merged into the other.
-
-Because the clone is locally signed, CloudKit is disabled and Arc cloud sync
-is not promised. Some device-bound website sessions may ask you to sign in
-again even when their cookies and saved login records were copied.
+The patch focuses on Arc's native window frame. The sidebar, command bar, downloads, Find in Page, Little Arc, tabs, Spaces, folders, extensions, Arc Sync, and normal browsing remain part of Arc.
 
 ## Easy installation
 
-No Terminal commands need to be copied or typed.
+No Terminal commands need to be typed.
 
-1. Install official Arc in your Applications folder. Open it once and make
-   sure your Spaces, tabs and logins are present.
+1. Install official Arc in `/Applications` and open it once.
 2. Download **[Arc-Borderless-Installer.zip](https://github.com/omarqaterge/arc-borderless/releases/latest/download/Arc-Borderless-Installer.zip)**.
-3. Double-click the ZIP, then open the resulting folder.
-4. Control-click **Install Arc Borderless.command**, choose **Open**, then
-   choose **Open** again if macOS asks. This extra first-open step is normal
-   for an unsigned community script.
-5. Read the short explanation and press Return to continue.
+3. Double-click the ZIP and open the resulting folder.
+4. Control-click **Install Arc Borderless.command**, choose **Open**, then confirm **Open** if macOS asks.
+5. Read the explanation and press Return.
 
-The installer checks the Mac, offers Apple's free build tools if they are
-missing, quits Arc before copying its data, creates and tests the isolated
-browser, then opens it. It keeps the Terminal window open if something fails
-so the error can be read.
+The installer verifies Arc's official signature, checks that the required Arc interface components still exist, builds a local launcher, and tests the patch with an empty temporary profile. Arc's application files and real profile are never edited by the installer.
 
-After official Arc receives an update, download the latest installer and run
-**Install Arc Borderless.command** again. It detects the existing installation,
-backs it up, applies the new Arc build and keeps the existing Borderless
-profile.
+The launcher is installed at:
 
-Default locations:
+`~/Applications/Arc Borderless.app`
 
-- Browser: `~/Applications/Arc Borderless.app`
-- Private profile: `~/Library/Application Support/Arc Borderless`
-- Update backups: `~/Library/Application Support/Arc Borderless Backups`
+Open **Arc Borderless** when you want the borderless interface. Open **Arc** normally when you want the regular interface.
 
-Official Arc is not patched or replaced.
+## One Arc process at a time
 
-## Use iCloud Passwords
+Arc and Arc Borderless mode cannot run simultaneously. Both launch choices ultimately run the same officially signed Arc application.
 
-Arc Borderless can use passwords from iCloud Keychain through Apple's
-**iCloud Passwords** browser extension:
+If Arc is already open when you choose Arc Borderless, the launcher offers to quit Arc and continue. Arc restores its windows and tabs from the same profile. If Borderless mode is already running and you click regular Arc, macOS brings the existing Borderless process forward; quit it first to return to regular Arc.
 
-1. Open the **Passwords** app on your Mac.
-2. Choose **Passwords > Get Browser Extension**, then install Apple's iCloud
-   Passwords extension in Arc Borderless.
-3. In the extension's options, leave **In-Page AutoFill** enabled.
-4. If iCloud Passwords will be your main password manager, also leave **Turn
-   Off Chrome AutoFill** enabled. This prevents Arc's built-in password popup
-   from covering or competing with Apple's popup.
+This single-instance design is what preserves Arc's signing identity and restricted browser entitlements. Copying Arc's signature onto a modified clone is not possible: changing a signed app invalidates its cryptographic seal.
 
-### Passwords and passkeys are different
+## Passwords, cookies, and iCloud Keychain
 
-The iCloud Passwords extension can fill ordinary saved passwords, but it does
-not restore native iCloud **passkey** access to this locally signed clone. Arc
-Borderless cannot show the macOS sheet that says **Touch ID to Use Passkey**.
-That feature requires Apple's restricted
-`com.apple.developer.web-browser.public-key-credential` entitlement on a
-browser signed by an Apple-approved developer. Official Arc and signed browsers
-such as Zen can carry that entitlement; an ad-hoc signed clone cannot.
+Borderless mode uses Arc's normal profile and Arc's normal **Arc Safe Storage** Keychain item. There is no password CSV migration and no second password database to keep synchronized.
 
-For Google, choose **Try another way** and use your password instead of the
-passkey. Google then uses separate email and password pages. On the first page,
-select your account from the iCloud Passwords list; Apple fills only the email.
-Click **Next**. On the password page, click the password field and select the
-same account from the iCloud Passwords list again. If authentication is
-requested, approve it and the extension fills the saved password. Clicking the
-password field alone only opens the account list, and the extension does not
-press Google's **Next** button for you.
+The running browser retains Arc's official bundle identifier, developer Team ID, and Apple's `com.apple.developer.web-browser.public-key-credential` entitlement. This is the entitlement used for the native **Touch ID to Use Passkey** sheet. Apple's iCloud Passwords extension can also be used as it is in regular Arc.
 
-Passwords imported into Arc's Password Manager and passwords stored in iCloud
-Keychain are separate collections. To use a Chrome CSV with iCloud Passwords,
-import it into the macOS **Passwords** app with **File > Import Passwords from
-File**. Do not import the CSV only into Arc and expect it to appear in iCloud.
+The installer does not read, export, copy, or rewrite passwords, cookies, passkeys, or Keychain secrets.
 
-If you prefer Arc's built-in Password Manager, disable the iCloud Passwords
-extension. Running both autofill systems at the same time can produce
-overlapping or inconsistent suggestions.
+## Updating Arc
 
-## Requirements and technical use
+Let official Arc receive its normal Chromium and security updates. After Arc updates, run the latest Arc Borderless installer again.
 
-- macOS, with Arc installed locally. Tested platform: Apple Silicon.
-- Python 3.9 or newer and Apple Command Line Tools (`xcode-select --install`).
-- Enough free space for an app/profile backup. APFS copy-on-write is used when available.
-- macOS may ask you to authorize access to the source encryption key. Secrets stay within native process memory and Keychain; they are never written to logs, files, or the ZIP.
+The launcher records the exact verified Arc executable it was built for. If Arc changes, Borderless mode refuses to load the old patch and asks you to rerun the installer. This prevents an outdated private-interface patch from opening your real profile on an untested Arc build.
 
-The package contains patch source, installer code, and tests. It contains no Arc application, profile, cookies, or passwords.
+The installer keeps an existing launcher until the replacement builds and passes its startup test. Arc's profile is not part of that replacement.
 
-### Create from official Arc
+## Upgrading from the earlier clone version
 
-Most people should use **Install Arc Borderless.command**. The equivalent
-manual command is:
+The new signed mode uses your normal Arc profile. The earlier isolated profile is retained at:
 
-```sh
-python3 borderless.py create --source-data "$HOME/Library/Application Support/Arc" --preferences "$HOME/Library/Preferences/company.thebrowser.Browser.plist" --quit-source
-```
+`~/Library/Application Support/Arc Borderless`
 
-This quits official Arc normally, copies its application data, migrates the Safe Storage encryption key into a new isolated Keychain item, checks copied SQLite databases and cookie decryption, and tests the candidate in a disposable profile copy. The original app/profile are retained.
+It is not deleted or merged automatically. Chromium profiles cannot be safely combined as whole folders. Keep the old profile as a recovery copy until you have confirmed that everything you need is present in regular Arc.
 
-For a fresh profile that does not copy cookies or saved logins:
+A backup of the replaced launcher or clone app is stored under:
 
-```sh
-python3 borderless.py create --empty
-```
+`~/Library/Application Support/Arc Borderless Backups`
 
-You may supply `--app PATH` and `--root PATH` to choose other separate destinations. An existing destination is never overwritten by `create`.
+## Manual commands
 
-Arc account sign-in may be required after migration from official Arc. Website cookies and saved passwords are separate from Arc account authentication. Copied login records do not guarantee that every website will retain its session.
-
-### Migrate the earlier Borderless prototype
-
-The prototype has two apparent profile locations; the active one is normally the `User Data` folder inside its fixed home. Supply the parent Arc application-support folder, not the unused standalone `profile` folder:
-
-```sh
-python3 borderless.py create \
-  --source-data '/path/to/arc-mod/home/Library/Application Support/Arc' \
-  --source-app '/path/to/arc-mod/Arc-Borderless.app' \
-  --source-key-service 'ArcBorderlessTest/Arc Safe Storage' \
-  --preferences '/path/to/arc-mod/home/Library/Preferences/company.thebrowser.Browser.plist' \
-  --quit-source
-```
-
-This also copies authentication items specifically from the prototype's `ArcBorderlessTest/` Keychain namespace. It does not enumerate or export other applications' secret values.
-
-### Manual update
-
-First update **official Arc** through its normal updater. Then run the friendly
-installer again, or use:
-
-```sh
-python3 borderless.py update
-```
-
-The installer verifies the official developer signature and expected native UI symbols, builds a staged clone, normally quits Borderless, backs up its app and profile, and tests the new app against a disposable copy of that profile. The candidate must reach a browser window and verify cookie/password decryption before replacement. A failed candidate does not replace the installed app. A successful update retains the existing Borderless profile and Keychain namespace; it never reimports older official-Arc data.
-
-The clone's Sparkle updater is blocked; it must be updated through this installer. This version does not download releases, schedule background checks, or silently apply updates.
-
-Static checks and startup checks are not proof of all UI behavior. Future Chromium releases may still need patch changes. Do not keep using an obsolete browser indefinitely if a security update fails validation.
-
-## Troubleshooting and rollback
-
-- **macOS says the script is from an unidentified developer:** Control-click
-  the installer, choose **Open**, then confirm **Open**. You normally do this
-  only the first time you download a release.
-- **Apple's build tools are missing:** accept the installation offered by
-  macOS, wait for it to finish, then run the installer again.
-- **The installer stops:** read the final message in the Terminal window.
-  Existing apps and profiles are retained until a replacement passes its
-  checks.
-- **A website asks you to sign in again:** some sessions are tied to a specific
-  app or device and cannot be migrated. Your saved password may still be
-  available.
-
-For a manual rollback, the update command prints a matched app/profile backup
-directory:
-
-```sh
-python3 borderless.py rollback '/path/printed/by/update'
-```
-
-Both app and profile are restored together because Chromium profile migrations may not be backward compatible. Your newer app/profile are preserved in another backup before restoring. Changes made after the chosen snapshot are not merged into the older snapshot.
-
-## Manual inspection or uninstall
+Most people should use the double-click installer. Developers can run:
 
 ```sh
 python3 borderless.py check
+python3 borderless.py install
 python3 borderless.py status
 python3 borderless.py uninstall
 ```
 
-`check` verifies the source without changing it. Finder metadata, if needed, is normalized only on a disposable copy before checking the original signature.
+`check` performs a read-only signature and compatibility check. `install` builds and tests the launcher. `status` shows which Arc build the launcher expects. `uninstall` moves only the launcher to the Trash and retains recovery data.
 
-`uninstall` moves the managed clone app to Trash and retains its profile, backups, and isolated Keychain items. Official Arc is unaffected.
+## Requirements
+
+- macOS with official Arc installed in `/Applications`
+- Apple Silicon, which is the currently tested platform
+- Python 3.9 or newer
+- Apple's free Command Line Tools
 
 ## Limitations
 
-- Unofficial, locally re-signed app. Official signing identity and restricted entitlements cannot be retained. CloudKit is disabled; official sync is not promised.
-- Native iCloud passkeys and the **Touch ID to Use Passkey** system sheet are
-  unavailable because the clone cannot retain Apple's restricted browser
-  passkey entitlement. The iCloud Passwords extension can still fill ordinary
-  passwords.
-- Only one-time profile migration, not continuous synchronization or two-way merging.
-- Arc's native private UI classes may change, even in a Chromium-only update.
-- Keychain access may prompt again after rebuilding a locally signed executable.
-- Password Manager skips an unreadable legacy credential instead of showing an
-  empty list or deleting it. Readable saved and imported passwords remain
-  available, while the original database stays in the automatic backup for
-  recovery.
-- The clone is not registered as the default browser or a URL handler by the installer.
-- Website sessions, device-bound credentials, and server-side login validity cannot be guaranteed by copying a profile.
-- Backups contain private browsing data. Keep them private.
+- Arc and Borderless mode cannot run at the same time.
+- Arc's native interface classes are private and may change in a Chromium or security update. Rerun the installer after every Arc update.
+- The launcher uses `DYLD_INSERT_LIBRARIES` to load the local borderless library into Arc. This works because the current official Arc build allows compatible local libraries; a future Arc security-policy change could block it.
+- The official Arc application is discontinued except for Chromium and security maintenance, but compatibility still must be checked for every released build.
+- Native passkey eligibility is preserved and the entitlement is verified during development. Individual passkey providers, websites, and account policies may still affect a login.
+- This project is tested on Apple Silicon; Intel Macs have not been verified.
 
 ## Privacy and distribution
 
-This repository contains source code only. It does not include Arc, Chromium,
-an application bundle, a browser profile, credentials, cookies, or private
-Keychain data. You must already have an official local Arc installation.
+The repository and release contain patch and installer source only. They do not contain Arc, Chromium, browser profiles, credentials, cookies, passwords, or passkeys. The installer uses the Arc copy already installed on the user's Mac.
 
-Do not distribute a patched Arc application: Arc and its bundled components
-remain the property of their respective owners.
+Do not distribute a modified Arc application. Arc and its bundled components remain the property of their respective owners.
 
 ## License
 
-The installer and patch source in this repository are available under the
-[MIT License](LICENSE). This license does not grant rights to Arc or any files
-copied from an Arc installation.
+The launcher, installer, and patch source in this repository are available under the [MIT License](LICENSE). This license does not grant rights to Arc or any files installed with Arc.
 
 ## Development checks
 
@@ -254,6 +123,4 @@ copied from an Arc installation.
 python3 -m unittest discover -s tests -v
 ```
 
-See `VALIDATION.md` for the actual tested build and outstanding limitations.
-
-Credential verification during updates runs inside the cloned browser, using its existing Keychain authorization. If macOS requires renewed authorization after a future Arc executable change, the normal browser Keychain prompt may still appear. The installer does not bypass that permission.
+See [VALIDATION.md](VALIDATION.md) for the currently verified Arc build and test boundaries.
