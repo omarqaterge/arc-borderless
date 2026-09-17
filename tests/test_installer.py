@@ -71,5 +71,22 @@ class InstallerTests(unittest.TestCase):
   self.assertTrue((args.app/'new').exists());self.assertTrue((args.state/'home').exists())
   manifest=json.loads((args.state/'signed-installation.json').read_text());backup=Path(manifest['previousAppBackup'])
   self.assertEqual((backup/'Arc Borderless.app/old').read_text(),'old');self.assertTrue(manifest['legacyProfileRetained'])
+ def test_check_sip_status_detects_sip(self):
+  with patch('subprocess.run') as mock_run:
+   mock_run.return_value = SimpleNamespace(returncode=0, stdout='System Integrity Protection status: enabled.\n')
+   status = b.check_sip_status()
+   self.assertEqual(status, 'enabled')
+ def test_validate_timeout_includes_sip_diagnostic_when_sip_enabled(self):
+  with patch.object(b, 'check_sip_status', return_value='enabled'), \
+       patch.object(b, 'quit_app'), \
+       patch.object(b, 'build_tools', side_effect=self.fake_tools), \
+       patch('subprocess.Popen') as mock_popen, \
+       patch('time.sleep', return_value=None), \
+       patch('time.monotonic', side_effect=[0, 100]):
+   proc = SimpleNamespace(poll=lambda: None, pid=12345, returncode=None, wait=lambda timeout=None: None)
+   mock_popen.return_value = proc
+   with self.assertRaises(b.Failure) as cm:
+    b.validate(self.root / 'dummy.app', self.root / 'source.app', seconds=1)
+   self.assertIn('System Integrity Protection', str(cm.exception))
 
 if __name__=='__main__':unittest.main()

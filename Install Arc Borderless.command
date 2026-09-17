@@ -46,6 +46,17 @@ command -v python3 >/dev/null 2>&1 || stop "Python 3 was not found. Reinstall Ap
 python3 -c 'import sys; raise SystemExit(sys.version_info < (3, 9))' \
   || stop "Python 3.9 or newer is required. Update Apple's Command Line Tools and try again."
 
+if [[ "$(csrutil status 2>/dev/null)" == *"enabled"* ]]; then
+  cat <<'SIP_NOTICE'
+
+Notice: macOS System Integrity Protection (SIP) is enabled on this Mac.
+Signed Borderless mode loads styling hooks into official Arc at startup.
+Because official Arc includes macOS Hardened Runtime, SIP will prevent
+dynamic library insertion unless SIP debugging restrictions are disabled.
+If the startup test times out, see README.md for details.
+SIP_NOTICE
+fi
+
 cat <<'INSTALL'
 
 The installer will now:

@@ -102,10 +102,17 @@ python3 borderless.py uninstall
 
 - Arc and Borderless mode cannot run at the same time.
 - Arc's native interface classes are private and may change in a Chromium or security update. Rerun the installer after every Arc update.
-- The launcher uses `DYLD_INSERT_LIBRARIES` to load the local borderless library into Arc. This works because the current official Arc build allows compatible local libraries; a future Arc security-policy change could block it.
+- The launcher uses `DYLD_INSERT_LIBRARIES` to load the local borderless library into Arc. Because official Arc includes Apple's Hardened Runtime, macOS System Integrity Protection (SIP) must allow library injection (for example, with debugging restrictions disabled). On standard systems with full SIP enabled, `dyld` purges dynamic library insertions for hardened runtime applications, causing the startup test to time out.
 - The official Arc application is discontinued except for Chromium and security maintenance, but compatibility still must be checked for every released build.
 - Native passkey eligibility is preserved and the entitlement is verified during development. Individual passkey providers, websites, and account policies may still affect a login.
 - This project is tested on Apple Silicon; Intel Macs have not been verified.
+
+## Troubleshooting
+
+### "Stopped: The startup test did not report success before the timeout."
+This occurs when the borderless dylib does not load into the Arc process before the test deadline:
+1. **System Integrity Protection (SIP):** Check `csrutil status`. Official Arc is protected by macOS Hardened Runtime. If SIP is active with debugging restrictions enabled, macOS dyld strips `DYLD_INSERT_LIBRARIES` on launch, preventing the mod from loading.
+2. **Diagnostics:** Inspect the retained diagnostic report at `diagnostics/<timestamp>/runtime.log` to see process exit codes and stderr messages.
 
 ## Privacy and distribution
 

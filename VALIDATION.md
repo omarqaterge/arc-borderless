@@ -24,4 +24,5 @@ Tested on macOS Apple Silicon, September 13, 2026, against official Arc 1.164.0 
 - The real profile was opened only by the final normal launch. Automated validation used a disposable profile and did not inspect private browsing data.
 - Compatibility with later Arc builds is not assumed. The launcher refuses to run if the verified Arc executable hash changes.
 - Apple Silicon is tested. Intel macOS and every split arrangement are not exhaustively verified.
-- A future Arc hardened-runtime or library-validation change could prevent local injection.
+- A future Arc hardened-runtime or library-validation change could prevent local injection. Under default macOS System Integrity Protection (SIP), dyld strips dynamic libraries injected into Developer ID signed binaries that enable Hardened Runtime; local injection requires SIP debugging restrictions to be disabled.
+- The installer preflight now detects SIP status and reports clear diagnostic explanations if the startup probe fails to complete.

@@ -59,6 +59,18 @@ def clone(source, target):
             shutil.rmtree(target)
         shutil.copytree(source, target, symlinks=True)
 
+def check_sip_status():
+    try:
+        res = subprocess.run(['/usr/bin/csrutil', 'status'], capture_output=True, text=True)
+        out = res.stdout.lower()
+        if 'enabled' in out:
+            return 'enabled'
+        elif 'disabled' in out:
+            return 'disabled'
+        return 'unknown'
+    except Exception:
+        return 'unknown'
+
 def app_info(app):
     return read_plist(Path(app) / 'Contents/Info.plist')
 
@@ -86,8 +98,12 @@ def preflight(app):
     data = binary.read_bytes()
     if any(symbol not in data for symbol in UI_SYMBOLS):
         raise Failure('This Arc build changed the required interface components. No patch was installed.')
+    sip_status = check_sip_status()
+    if sip_status == 'enabled':
+        print('Warning: macOS System Integrity Protection (SIP) is enabled. Signed injection into official Arc may be prevented by Hardened Runtime.', file=sys.stderr)
     return {'version': info['CFBundleShortVersionString'], 'build': str(info['CFBundleVersion']),
-            'sourceSHA256': sha(binary), 'source': str(app), 'staticCompatible': True}
+            'sourceSHA256': sha(binary), 'source': str(app), 'staticCompatible': True,
+            'sipStatus': sip_status}
 
 def build_tools():
     binary_directory = HERE / 'bin'
@@ -173,7 +189,17 @@ def validate(app, source, seconds=45):
                                 and result.get('bundleID') == SOURCE_ID):
                             return result
                     time.sleep(.25)
-                raise Failure('The startup test did not report success before the timeout.')
+                sip_status = check_sip_status()
+                message = 'The startup test did not report success before the timeout.'
+                if not report.exists():
+                    message += ' No runtime report was generated.'
+                    if sip_status == 'enabled':
+                        message += (' macOS System Integrity Protection (SIP) is enabled, which prevents '
+                                    'DYLD_INSERT_LIBRARIES injection into official signed applications with Hardened Runtime.')
+                elif report.exists():
+                    result = json.loads(report.read_text())
+                    message += f' Partial report generated: {result}'
+                raise Failure(message)
             except BaseException:
                 diagnostics = HERE / 'diagnostics' / datetime.datetime.now().strftime('%Y%m%d-%H%M%S-%f')
                 diagnostics.mkdir(parents=True, mode=0o700)
